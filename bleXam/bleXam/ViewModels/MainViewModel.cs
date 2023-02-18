@@ -11,6 +11,7 @@ using Xamarin.Forms;
 using bleXam.Models;
 using System.Collections.Specialized;
 
+//TODO: Only iOS was configured for accessing the bluetooth LE features
 namespace bleXam.ViewModels
 {
 	public class MainViewModel : BaseViewModel
