@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:bleXam.ViewModels"
+             xmlns:models="clr-namespace:bleXam.Models"
+             xmlns:converters="clr-namespace:bleXam.Converters"
+             x:DataType="viewModels:MainViewModel"
+             x:Class="bleXam.MainPage">
+    <ContentPage.Resources>
+        <converters:BooleanConverter x:Key="BooleanConverter"/>
+    </ContentPage.Resources>
+    <StackLayout>
+        <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
+            <Label Text="Welcome to Bluetooth Low Energy App"
+                   HorizontalTextAlignment="Center"
+                   TextColor="White"
+                   FontSize="36"/>
+        </Frame>
+
+        <Grid ColumnDefinitions="*,*"
+              RowDefinitions="*,Auto"
+              RowSpacing="0"
+              ColumnSpacing="6">
+            <ListView Grid.ColumnSpan="2"
+                      ItemsSource="{Binding Devices, Mode=TwoWay}"
+                      IsVisible="{Binding IsScanning, Converter={StaticResource BooleanConverter}}">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:DeviceModel">
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Id}"/>
+                                <Label Text="{Binding Name}"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+
+            <Button x:Name="ScanDevicesButton"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="8"
+                    Command="{Binding ScanDevicesCommand}"
+                    IsEnabled="{Binding IsScanning, Converter={StaticResource BooleanConverter}}"
+                    IsVisible="{Binding IsScanning, Converter={StaticResource BooleanConverter}}"
+                    Text="Scan nearby devices" />
+
+            <Button x:Name="CheckBluetoothButton"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="8"
+                    Command="{Binding CheckBluetoothAvailabilityCommand}"
+                    IsEnabled="{Binding IsScanning, Converter={StaticResource BooleanConverter}}"
+                    IsVisible="{Binding IsScanning, Converter={StaticResource BooleanConverter}}"
+                    Text="Check Bluetooth" />
+
+            <ActivityIndicator Grid.ColumnSpan="2"
+                               Grid.RowSpan="2"
+                               BackgroundColor="Transparent"
+                               Color="#2196F3"
+                               HeightRequest="500"
+                               WidthRequest="500"
+                               IsRunning="{Binding IsScanning}"
+                               IsVisible="{Binding IsScanning}"/>
+        </Grid>
+    </StackLayout>
+</ContentPage>
+
