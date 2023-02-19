@@ -10,6 +10,8 @@ using Plugin.BLE.Abstractions.Contracts;
 using Xamarin.Forms;
 using bleXam.Models;
 using System.Collections.Specialized;
+using Plugin.BLE.Abstractions.Extensions;
+using Plugin.BLE.Abstractions.Exceptions;
 
 //TODO: Only iOS was configured for accessing the bluetooth LE features
 namespace bleXam.ViewModels
@@ -24,12 +26,14 @@ namespace bleXam.ViewModels
 
             ScanDevicesCommand = new Command(ScanDevices);
             CheckBluetoothAvailabilityCommand = new Command(CheckBluetoothAvailability);
+            ConnectToDeviceCommand = new Command(ConnectToDevice);
 
             Devices = new ObservableCollection<DeviceModel>();
         }
 
         public ICommand ScanDevicesCommand { get; set; }
         public ICommand CheckBluetoothAvailabilityCommand { get; set; }
+        public ICommand ConnectToDeviceCommand { get; set; }
 
         private ObservableCollection<DeviceModel> _devices;
         public ObservableCollection<DeviceModel> Devices
@@ -118,6 +122,25 @@ namespace bleXam.ViewModels
                 await Application.Current.MainPage.DisplayAlert($"Unable to check Bluetooth availability", $"{ex.Message}.", "OK");
             }
         }
-	}
+
+        private async void ConnectToDevice(object deviceModel)
+        {
+            try
+            {
+                var device = (DeviceModel)deviceModel;
+
+                await _bleService.Adapter.ConnectToKnownDeviceAsync(device.Id);
+
+                var vm = new BluetoothViewModel(_bleService);
+                vm.Device = device;
+
+                await Application.Current.MainPage.Navigation.PushAsync(new BluetoothPage(vm), false);
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert($"Unable to connect to device.", $"{ex.Message}.", "OK");
+            }
+        }
+    }
 }
 

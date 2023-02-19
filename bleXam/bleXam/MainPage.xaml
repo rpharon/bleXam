@@ -28,6 +28,11 @@
                     <DataTemplate x:DataType="models:DeviceModel">
                         <ViewCell>
                             <StackLayout Orientation="Horizontal">
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ConnectToDeviceCommand,
+                                                                    Source={RelativeSource AncestorType={x:Type viewModels:MainViewModel }}}"
+                                                          CommandParameter="{Binding .}"/>
+                                </StackLayout.GestureRecognizers>
                                 <Label Text="{Binding Id}"/>
                                 <Label Text="{Binding Name}"/>
                             </StackLayout>

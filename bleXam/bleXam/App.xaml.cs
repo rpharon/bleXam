@@ -19,9 +19,10 @@ namespace bleXam
         protected override void OnStart ()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<BleService>().As<IBleService>();
-            builder.RegisterType<MainViewModel>();
-            builder.RegisterType<MainPage>();
+
+            RegisterServices(builder);
+            RegisterViewModels(builder);
+            RegisterPages(builder);
 
             Container = builder.Build();
 
@@ -36,6 +37,23 @@ namespace bleXam
 
         protected override void OnResume ()
         {
+        }
+
+        private void RegisterServices(ContainerBuilder container)
+        {
+            container.RegisterType<BleService>().As<IBleService>();
+        }
+
+        private void RegisterViewModels(ContainerBuilder container)
+        {
+            container.RegisterType<MainViewModel>();
+            container.RegisterType<BluetoothViewModel>();
+        }
+
+        private void RegisterPages(ContainerBuilder container)
+        {
+            container.RegisterType<MainPage>();
+            container.RegisterType<BluetoothPage>();
         }
     }
 }
