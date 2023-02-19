@@ -2,6 +2,7 @@
 using Autofac;
 using bleXam.Services;
 using bleXam.ViewModels;
+using Plugin.BLE.Abstractions.Contracts;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

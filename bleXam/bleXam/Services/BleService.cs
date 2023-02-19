@@ -16,7 +16,7 @@ namespace bleXam.Services
 {
     public class BleService : IBleService
     {
-        public List<DeviceModel> Devices { get; private set; }
+        public List<IDevice> Devices { get; private set; }
 
         public BleService()
         {
@@ -28,13 +28,16 @@ namespace bleXam.Services
 
             BluetoothLE.StateChanged += BluetoothLE_StateChanged;
 
-            Devices = new List<DeviceModel>();
+            Devices = new List<IDevice>();
         }
 
         public IBluetoothLE BluetoothLE => CrossBluetoothLE.Current;
         public IAdapter Adapter => CrossBluetoothLE.Current.Adapter;
+        public IService Service { get; set; }
+        public ICharacteristic Characteristic { get; set; }
+        public IDevice Device { get; set; }
 
-        public async Task<List<DeviceModel>> ScanForDevicesAsync()
+        public async Task<List<IDevice>> ScanForDevicesAsync()
         {
             try
             {
@@ -54,11 +57,7 @@ namespace bleXam.Services
         {
             try
             {
-                Devices.Add(new DeviceModel()
-                {
-                    Id = e.Device.Id,
-                    Name = e.Device.Name
-                });
+                Devices.Add(e.Device);
                 Debug.WriteLine($"Found {e.Device.State.ToString().ToLower()} {e.Device.Name}.");
             }
             catch(Exception ex)

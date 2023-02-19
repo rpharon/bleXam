@@ -11,7 +11,10 @@ namespace bleXam.Services
 	{
         IBluetoothLE BluetoothLE { get; }
         IAdapter Adapter { get; }
-        Task<List<DeviceModel>> ScanForDevicesAsync();
+        IService Service { get; set; }
+        ICharacteristic Characteristic { get; set; }
+        IDevice Device { get; set; }
+        Task<List<IDevice>> ScanForDevicesAsync();
     }
 }
 

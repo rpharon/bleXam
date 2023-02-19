@@ -28,15 +28,15 @@ namespace bleXam.ViewModels
             CheckBluetoothAvailabilityCommand = new Command(CheckBluetoothAvailability);
             ConnectToDeviceCommand = new Command(ConnectToDevice);
 
-            Devices = new ObservableCollection<DeviceModel>();
+            Devices = new ObservableCollection<IDevice>();
         }
 
         public ICommand ScanDevicesCommand { get; set; }
         public ICommand CheckBluetoothAvailabilityCommand { get; set; }
         public ICommand ConnectToDeviceCommand { get; set; }
 
-        private ObservableCollection<DeviceModel> _devices;
-        public ObservableCollection<DeviceModel> Devices
+        private ObservableCollection<IDevice> _devices;
+        public ObservableCollection<IDevice> Devices
         {
             get => _devices;
             set => SetProperty(ref _devices, value);
@@ -72,7 +72,7 @@ namespace bleXam.ViewModels
 
                 IsScanning = true;
 
-                List<DeviceModel> deviceCandidates = await _bleService.ScanForDevicesAsync();
+                List<IDevice> deviceCandidates = await _bleService.ScanForDevicesAsync();
 
                 if (deviceCandidates.Count == 0)
                 {
@@ -80,7 +80,7 @@ namespace bleXam.ViewModels
                 }
                 else
                 {
-                    Devices = new ObservableCollection<DeviceModel>(deviceCandidates.Select(x => new DeviceModel() { Id = x.Id, Name = x.Name }));
+                    Devices = new ObservableCollection<IDevice>(deviceCandidates);
                 }
             }
             catch (Exception ex)
@@ -127,12 +127,24 @@ namespace bleXam.ViewModels
         {
             try
             {
-                var device = (DeviceModel)deviceModel;
+                if (_bleService.Adapter.IsScanning)
+                {
+                    await _bleService.Adapter.StopScanningForDevicesAsync();
+                }
 
-                await _bleService.Adapter.ConnectToKnownDeviceAsync(device.Id);
+                var device = (IDevice)deviceModel;
 
-                var vm = new BluetoothViewModel(_bleService);
-                vm.Device = device;
+                var guid = new Guid(device.Id.ToString());
+                _bleService.Device = await _bleService.Adapter.ConnectToKnownDeviceAsync(guid);
+
+                var vm = new BluetoothViewModel(_bleService)
+                {
+                    Device = new DeviceModel()
+                    {
+                        Id = _bleService.Device.Id,
+                        Name = _bleService.Device.Name
+                    }
+                };
 
                 await Application.Current.MainPage.Navigation.PushAsync(new BluetoothPage(vm), false);
             }
