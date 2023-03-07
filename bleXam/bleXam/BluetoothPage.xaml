@@ -25,6 +25,8 @@
                     Command="{Binding SendDoneCommand}"/>
             <Button Text="Send Test"
                     Command="{Binding SendTestCommand}"/>
+            <Button Text="Send Error"
+                    Command="{Binding SendErrorCommand"/>
         </StackLayout>
     </StackLayout>
 </ContentPage>

@@ -21,11 +21,13 @@ namespace bleXam.ViewModels
             SendDataCommand = new Command(SendData);
             SendDoneCommand = new Command(SendDone);
             SendTestCommand = new Command(SendTest);
+            SendErrorCommand = new Command(SendError);
         }
 
         public ICommand SendDataCommand { get; set; }
         public ICommand SendDoneCommand { get; set; }
         public ICommand SendTestCommand { get; set; }
+        public ICommand SendErrorCommand { get; set; }
 
         private DeviceModel _device;
         public DeviceModel Device
@@ -78,6 +80,11 @@ namespace bleXam.ViewModels
         private async void SendTest()
         {
             await Write("Test");
+        }
+
+        private async void SendError()
+        {
+            await Write("Error_M1U");
         }
 	}
 }
