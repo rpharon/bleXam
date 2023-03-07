@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Plugin.BLE.Abstractions.Contracts;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace bleXam.ViewModels
 {
@@ -18,9 +19,13 @@ namespace bleXam.ViewModels
             _bleService = bleService;
 
             SendDataCommand = new Command(SendData);
+            SendDoneCommand = new Command(SendDone);
+            SendTestCommand = new Command(SendTest);
         }
 
         public ICommand SendDataCommand { get; set; }
+        public ICommand SendDoneCommand { get; set; }
+        public ICommand SendTestCommand { get; set; }
 
         private DeviceModel _device;
         public DeviceModel Device
@@ -36,7 +41,7 @@ namespace bleXam.ViewModels
             set => SetProperty(ref _data, value);
         }
 
-        private async void SendData()
+        private async Task Write(string data)
         {
             try
             {
@@ -47,18 +52,32 @@ namespace bleXam.ViewModels
                     _bleService.Service = await _bleService.Device.GetServiceAsync(new Guid("0783b03e-8535-b5a0-7140-a304d2495cb7")); //This Id is specific from the rs232 BLE of Gilgen
                     _bleService.Characteristic = await _bleService.Service.GetCharacteristicAsync(new Guid("0783b03e-8535-b5a0-7140-a304d2495cba")); //This Id is specific from the rs232 BLE of Gilgen
 
-                    var data = Encoding.ASCII.GetBytes(Data);
-                    await _bleService.Characteristic.WriteAsync(data);
+                    await _bleService.Characteristic.WriteAsync(Encoding.ASCII.GetBytes(data));
                 }
                 else
                 {
                     await Application.Current.MainPage.DisplayAlert("Send Data", "You are not connected.", "OK");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Send Data", ex.Message, "OK");
             }
+        }
+
+        private async void SendData()
+        {
+            await Write(Data);
+        }
+
+        private async void SendDone()
+        {
+            await Write("Done_M1U");
+        }
+
+        private async void SendTest()
+        {
+            await Write("Test");
         }
 	}
 }

@@ -21,6 +21,10 @@
         <StackLayout>
             <Button Text="Send Data"
                     Command="{Binding SendDataCommand}"/>
+            <Button Text="Send Done"
+                    Command="{Binding SendDoneCommand}"/>
+            <Button Text="Send Test"
+                    Command="{Binding SendTestCommand}"/>
         </StackLayout>
     </StackLayout>
 </ContentPage>
