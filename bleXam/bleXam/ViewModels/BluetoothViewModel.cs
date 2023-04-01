@@ -54,7 +54,7 @@ namespace bleXam.ViewModels
                     _bleService.Service = await _bleService.Device.GetServiceAsync(new Guid("0783b03e-8535-b5a0-7140-a304d2495cb7")); //This Id is specific from the rs232 BLE of Gilgen
                     _bleService.Characteristic = await _bleService.Service.GetCharacteristicAsync(new Guid("0783b03e-8535-b5a0-7140-a304d2495cba")); //This Id is specific from the rs232 BLE of Gilgen
 
-                    await _bleService.Characteristic.WriteAsync(Encoding.ASCII.GetBytes(data));
+                    await _bleService.Characteristic.WriteAsync(Encoding.ASCII.GetBytes(string.Concat(data, "\r\n")));
                 }
                 else
                 {
@@ -79,7 +79,7 @@ namespace bleXam.ViewModels
 
         private async void SendTest()
         {
-            await Write("Test");
+            await Write("Test1\nTest2\n\rTest3\r\n");
         }
 
         private async void SendError()
